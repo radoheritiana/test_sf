@@ -2,16 +2,30 @@
 
 namespace App\Controller;
 
+use App\Repository\PlayerRepository;
+use App\Repository\TeamRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class IndexController extends AbstractController
 {
+    private $teamRepository;
+    private $playerRepository;
+    public function __construct(TeamRepository $teamRepository, PlayerRepository $playerRepository)
+    {
+        $this->teamRepository = $teamRepository;
+        $this->playerRepository = $playerRepository;
+    }
+
     #[Route('/', name: 'app_index')]
     public function index(): Response
     {
-        return $this->render('index.html.twig', []);
+        $all_teams = $this->teamRepository->findAll();
+
+        return $this->render('index.html.twig', [
+            'all_teams' => $all_teams
+        ]);
     }
 
     #[Route('/add-team-player', name: 'app_create_team')]
