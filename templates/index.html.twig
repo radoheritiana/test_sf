@@ -5,10 +5,17 @@
 {% block body %}
     <h1>Liste des équipes et des joueurs</h1>
     <table
+            id="table"
             class="table table-striped"
             data-toggle="table"
-            data-pagination="true"
             data-search="true"
+            data-pagination="true"
+            data-sortable="true"
+            data-show-columns="true"
+            data-show-refresh="true"
+            data-show-toggle="true"
+            data-page-list="[5, 10, 25, 50, 100, all]"
+            data-page-size="5"
     >
         <thead>
             <tr>
@@ -27,7 +34,7 @@
                 <td>{{ team.balance }}</td>
                 <td>{{ team.players | length }}</td>
                 <td>
-                    <button class="btn btn-secondary">Voir les joeurs</button>
+                    <button class="btn btn-secondary" onclick="">Voir les joeurs</button>
                 </td>
             </tr>
             {% else %}
@@ -37,4 +44,28 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" onclick="openModal()">
+        Launch static backdrop modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
