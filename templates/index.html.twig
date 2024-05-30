@@ -50,7 +50,7 @@
             <h1>Liste des joueurs</h1>
             <div class="d-flex justify-content-between my-2">
                 <div class="count">
-                    {{ all_players.getTotalItemCount }} équipe{% if all_players.getTotalItemCount != 1 %}s{% endif%} au total
+                    {{ all_players.getTotalItemCount }} joueur{% if all_players.getTotalItemCount != 1 %}s{% endif%} au total
                 </div>
                 <div>
                     <input name="search" id="search" type="search" class="form-control" placeholder="Rechercher...">
@@ -59,8 +59,8 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th {% if all_players.isSorted('t.first_name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Prénoms', 't.first_name') }}</th>
-                    <th {% if all_players.isSorted('t.last_name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Nom de famille', 't.last_name') }}</th>
+                    <th {% if all_players.isSorted('p.first_name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Prénoms', 'p.first_name') }}</th>
+                    <th {% if all_players.isSorted('p.last_name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Nom de famille', 'p.last_name') }}</th>
                     <th>Equipe</th>
                 </tr>
                 </thead>

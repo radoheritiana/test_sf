@@ -28,7 +28,6 @@ class IndexController extends AbstractController
     #[Route('/', name: 'app_index')]
     public function index(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
     {
-
         //team pagination
         $dql   = "SELECT t FROM App\Entity\Team t";
         $query = $em->createQuery($dql);
@@ -89,7 +88,6 @@ class IndexController extends AbstractController
     #[Route('/buy-sell-player', name: 'app_buy_or_sell_player')]
     public function buy_or_sell_player(): Response
     {
-
         return $this->render('buy_or_sell_player.html.twig', []);
     }
 }

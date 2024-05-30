@@ -1,3 +1,4 @@
+{% set _currentRoute = app.request.attributes.get('_route') %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container container-fluid">
         <a class="navbar-brand" href="{{ path('app_index') }}">ActuFoot</a>
@@ -9,13 +10,13 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ path("app_index") }}">Liste équipes/joueurs</a>
+                    <a class="nav-link {% if _currentRoute == 'app_index' %}{{ 'active' }}{% endif %}" href="{{ path("app_index") }}">Liste équipes/joueurs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_create_team') }}">Ajouter équipe/joueur</a>
+                    <a class="nav-link {% if _currentRoute == 'app_create_team' %}{{ 'active' }}{% endif %}" href="{{ path('app_create_team') }}">Ajouter équipe/joueur</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_buy_or_sell_player') }}">Vente/Achat joueur</a>
+                    <a class="nav-link {% if _currentRoute == 'app_buy_or_sell_player' %}{{ 'active' }}{% endif %}" href="{{ path('app_buy_or_sell_player') }}">Vente/Achat joueur</a>
                 </li>
             </ul>
         </div>
