@@ -7,6 +7,7 @@ use App\Entity\Sale;
 use App\Entity\Team;
 use App\Form\PlayerFormType;
 use App\Form\SalesFormType;
+use App\Form\SearchPlayerFormType;
 use App\Form\SearchTeamFormType;
 use App\Form\TeamFormType;
 use App\Repository\SaleRepository;
@@ -25,13 +26,19 @@ class IndexController extends AbstractController
         //team search form handling
         $search_team_form = $this->createForm(SearchTeamFormType::class);
         $search_team_form->handleRequest($request);
+        //player search form handling
+        $search_player_form = $this->createForm(SearchPlayerFormType::class);
+        $search_player_form->handleRequest($request);
 
-        $search_team_value = $search_team_form->get('name_query')->getData();
+        // if search team form submitted
+        $search_team_value = $search_team_form->get('search_input')->getData();
+        // if search player form submitted
+        $search_player_value = $search_player_form->get('search_input')->getData();
 
         //team pagination
         $teamdql   = "SELECT t FROM App\Entity\Team t";
 
-        //if search
+        //if team search
         if ($search_team_value) {
             $teamdql .= " WHERE t.name LIKE :searchQuery OR t.country LIKE :searchQuery";
         }
@@ -53,11 +60,19 @@ class IndexController extends AbstractController
         );
 
         //player pagination
-        $dql   = "SELECT p FROM App\Entity\Player p";
-        $query = $em->createQuery($dql);
+        $playerdql   = "SELECT p FROM App\Entity\Player p";
+        // if player search
+        if ($search_player_value) {
+            $playerdql .= " WHERE p.firstName LIKE :searchQuery OR p.lastName LIKE :searchQuery";
+        }
+
+        $player_query = $em->createQuery($playerdql);
+        if ($search_player_value) {
+            $player_query->setParameter('searchQuery', "%" . $search_player_value . "%");
+        }
 
         $paginate_players = $paginator->paginate(
-            $query,
+            $player_query,
             $request->query->getInt('p_page', 1),
             5,
             [
@@ -70,7 +85,8 @@ class IndexController extends AbstractController
         return $this->render('index.html.twig', [
             'all_teams' => $paginate_teams,
             'all_players' => $paginate_players,
-            'search_team_form' => $search_team_form->createView()
+            'search_team_form' => $search_team_form->createView(),
+            'search_player_form' => $search_player_form->createView()
         ]);
     }
 

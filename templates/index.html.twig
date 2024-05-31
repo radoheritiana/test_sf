@@ -3,6 +3,11 @@
 {% block title %}Liste des équipes et des joueurs{% endblock %}
 
 {% block body %}
+    <style>
+        .table {
+            height: 50vh;
+        }
+    </style>
     <div class="row">
         <div class="col-md-6">
             <h1>Liste des équipes</h1>
@@ -55,7 +60,9 @@
                     {{ all_players.getTotalItemCount }} joueur{% if all_players.getTotalItemCount != 1 %}s{% endif%} au total
                 </div>
                 <div>
-                    <input name="search" id="search" type="search" class="form-control" placeholder="Rechercher...">
+                    {{ form_start(search_player_form) }}
+                    {{ form_widget(search_player_form) }}
+                    {{ form_end(search_player_form) }}
                 </div>
             </div>
             <table class="table table-striped">

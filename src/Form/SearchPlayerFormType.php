@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\SearchType as FormSearchType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SearchTeamFormType extends AbstractType
+class SearchPlayerFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
