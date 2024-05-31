@@ -4,9 +4,9 @@
 
 {% block body %}
     <h1>Ajouter nouvelle équipe ou nouveau joueur</h1>
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-md-6">
-            <h3>Ajout d'équipe</h3>
+            <h3 class="my-3">Ajout d'équipe</h3>
             {{ form_start(team_form, {
                 'attr': {
                     'novalidate': 'novalidate',
@@ -30,7 +30,7 @@
             {{ form_end(team_form) }}
         </div>
         <div class="col-md-6">
-            <h3>Ajout de joueur</h3>
+            <h3 class="my-3">Ajout de joueur</h3>
             {{ form_start(player_form, {
                 'attr': {
                     'novalidate': 'novalidate',

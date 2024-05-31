@@ -4,14 +4,14 @@
 
 {% block body %}
     <style>
-        .table {
-            height: 50vh;
+        .table-container {
+            height: 45vh;
         }
     </style>
     <div class="row">
         <div class="col-md-6">
             <h1>Liste des équipes</h1>
-            <div class="d-flex justify-content-between my-2">
+            <div class="d-flex justify-content-between my-3">
                 <div class="count">
                     {{ all_teams.getTotalItemCount }} équipe{% if all_teams.getTotalItemCount != 1 %}s{% endif%} au total
                 </div>
@@ -21,41 +21,65 @@
                     {{ form_end(search_team_form) }}
                 </div>
             </div>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th {% if all_teams.isSorted('t.name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_teams, 'Nom de l\'équipe', 't.name') }}</th>
-                    <th {% if all_teams.isSorted('t.country') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_teams, 'Pays', 't.country') }}</th>
-                    <th {% if all_teams.isSorted('t.balance') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_teams, 'Solde', 't.balance') }}</th>
-                    <th>Nombre de joueurs</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for team in all_teams %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td>{{ team.name }}</td>
-                        <td>{{ team.country }}</td>
-                        <td>{{ team.balance }}</td>
-                        <td>{{ team.players | length }}</td>
-                        <td>
-                            <button class="btn btn-secondary" onclick="(e) => openModal(e)">Voir les joeurs</button>
-                        </td>
+                        <th {% if all_teams.isSorted('t.name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_teams, 'Nom équipe', 't.name') }}</th>
+                        <th {% if all_teams.isSorted('t.country') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_teams, 'Pays', 't.country') }}</th>
+                        <th {% if all_teams.isSorted('t.balance') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_teams, 'Solde', 't.balance') }}</th>
+                        <th>Nb de joueurs</th>
+                        <th>Action</th>
                     </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="5">Il n'y a pas encore d'équipe, veuillez ajouter!</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for team in all_teams %}
+                        <tr>
+                            <td>{{ team.name }}</td>
+                            <td>{{ team.country }}</td>
+                            <td>{{ team.balance }}</td>
+                            <td>{{ team.players | length }}</td>
+                            <td>
+                                <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ team.id }}">Joueurs</button>
+                            </td>
+                        </tr>
+                        <div class="modal fade" id="staticBackdrop{{ team.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Liste des joueurs du {{ team.name }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul class="list-group">
+                                            {% for player in team.players %}
+                                                <li class="list-group-item">{{ player.fullName }}</li>
+                                            {% else %}
+                                                <li class="list-group-item">Il n'y pas de joeurs à afficher</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">Il n'y a pas encore d'équipe, veuillez ajouter!</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             <div class="navigation">
                 {{ knp_pagination_render(all_teams) }}
             </div>
         </div>
         <div class="col-md-6">
             <h1>Liste des joueurs</h1>
-            <div class="d-flex justify-content-between my-2">
+            <div class="d-flex justify-content-between my-3">
                 <div class="count">
                     {{ all_players.getTotalItemCount }} joueur{% if all_players.getTotalItemCount != 1 %}s{% endif%} au total
                 </div>
@@ -65,64 +89,66 @@
                     {{ form_end(search_player_form) }}
                 </div>
             </div>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th {% if all_players.isSorted('p.firstName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Prénoms', 'p.firstName') }}</th>
-                    <th {% if all_players.isSorted('p.lastName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Nom de famille', 'p.lastName') }}</th>
-                    <th>Equipe</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for team in all_players %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td>{{ team.firstName }}</td>
-                        <td>{{ team.lastName }}</td>
-                        <td>{{ team.team.name }}</td>
+                        <th {% if all_players.isSorted('p.firstName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Prénoms', 'p.firstName') }}</th>
+                        <th {% if all_players.isSorted('p.lastName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Nom de famille', 'p.lastName') }}</th>
+                        <th>Equipe</th>
+                        <th>Action</th>
                     </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="3">Il n'y a pas encore de joueurs, veuillez ajouter!</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for player in all_players %}
+                        <tr>
+                            <td>{{ player.firstName }}</td>
+                            <td>{{ player.lastName }}</td>
+                            <td>{{ player.team.name }}</td>
+                            <td>
+                                <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#playermodal{{ player.id }}">Equipe</button>
+                            </td>
+                        </tr>
+                        <div class="modal fade" id="playermodal{{ player.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">A propos de l'équipe</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><b>Nom de l'équipe :</b> {{ player.team.name }}</p>
+                                        <p><b>Pays :</b> {{ player.team.country }}</p>
+                                        <p><b>Coéquipier :</b> </p>
+                                        <ul class="list-group">
+                                            {% for p in player.team.players %}
+                                                {% if p.id != player.id  %}
+                                                <li class="list-group-item">{{ p.fullName }}</li>
+                                                {% elseif player.team.players | length == 1 %}
+                                                    <li class="list-group-item">Il n'y pas de joeurs à afficher</li>
+                                                {% endif %}
+                                            {% else %}
+                                                <li class="list-group-item">Il n'y pas de joeurs à afficher</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">Il n'y a pas encore de joueurs, veuillez ajouter!</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             <div class="navigation">
                 {{ knp_pagination_render(all_players) }}
             </div>
         </div>
     </div>
-
-
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Launch static backdrop modal
-    </button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        /*function openModal(e) {
-            e.preventDefault();
-            const options = {};
-            const myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), options);
-            myModal.show();
-        }*/
-    </script>
 {% endblock %}

@@ -25,17 +25,23 @@ class TeamFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $countries = $this->jsonLoaderService->loadJson('public/countries.json');
-        $countries = array_flip($countries);
+        $countries_formatted = [];
+        foreach ($countries as $key => $country) {
+            $countries_formatted[$country] = $country;
+        }
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom de l\'équipe',
                 'constraints' => [
                     new NotBlank,
                     new Length(min: 3)
+                ],
+                'attr' => [
+                    'placeholder' => 'Ex: Fc Seville'
                 ]
             ])
             ->add('country', ChoiceType::class, [
-                'choices' => $countries,
+                'choices' => $countries_formatted,
                 'label' => 'Pays',
                 'constraints' => [
                     new NotBlank

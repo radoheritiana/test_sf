@@ -17,11 +17,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class IndexController extends AbstractController
 {
+    private EntityManagerInterface $em;
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     #[Route('/', name: 'app_index')]
-    public function index(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
+    public function index(Request $request, PaginatorInterface $paginator, SerializerInterface $serializer): Response
     {
         //team search form handling
         $search_team_form = $this->createForm(SearchTeamFormType::class);
@@ -43,7 +51,7 @@ class IndexController extends AbstractController
             $teamdql .= " WHERE t.name LIKE :searchQuery OR t.country LIKE :searchQuery";
         }
 
-        $team_query = $em->createQuery($teamdql);
+        $team_query = $this->em->createQuery($teamdql);
         if($search_team_value) {
             $team_query->setParameter("searchQuery", "%" . $search_team_value . "%");
         }
@@ -66,7 +74,7 @@ class IndexController extends AbstractController
             $playerdql .= " WHERE p.firstName LIKE :searchQuery OR p.lastName LIKE :searchQuery";
         }
 
-        $player_query = $em->createQuery($playerdql);
+        $player_query = $this->em->createQuery($playerdql);
         if ($search_player_value) {
             $player_query->setParameter('searchQuery', "%" . $search_player_value . "%");
         }
@@ -91,7 +99,7 @@ class IndexController extends AbstractController
     }
 
     #[Route('/add-team-player', name: 'app_create_team')]
-    public function add_team_and_player(Request $request, EntityManagerInterface $em): Response
+    public function add_team_and_player(Request $request): Response
     {
         // handle create team
         $team = new Team();
@@ -99,8 +107,8 @@ class IndexController extends AbstractController
         $team_form->handleRequest($request);
 
         if ($team_form->isSubmitted() && $team_form->isValid()) {
-            $em->persist($team);
-            $em->flush();
+            $this->em->persist($team);
+            $this->em->flush();
             return $this->redirectToRoute('app_index');
         }
 
@@ -110,8 +118,8 @@ class IndexController extends AbstractController
         $player_form->handleRequest($request);
 
         if ($player_form->isSubmitted() && $player_form->isValid()) {
-            $em->persist($player);
-            $em->flush();
+            $this->em->persist($player);
+            $this->em->flush();
             return $this->redirectToRoute('app_index');
         }
 
@@ -122,7 +130,7 @@ class IndexController extends AbstractController
     }
 
     #[Route('/buy-sell-player', name: 'app_buy_or_sell_player')]
-    public function buy_or_sell_player(Request $request, SaleRepository $saleRepository, EntityManagerInterface $em): Response
+    public function buy_or_sell_player(Request $request, SaleRepository $saleRepository): Response
     {
         $sale = new Sale();
         $sales_form = $this->createForm(SalesFormType::class, $sale);
@@ -138,8 +146,8 @@ class IndexController extends AbstractController
             // on déduit le montant de transfert au solde de l'équipe acheteur
             $sale->getBuyer()->setBalance($sale->getBuyer()->getBalance() - $sale->getAmount());
 
-            $em->persist($sale);
-            $em->flush();
+            $this->em->persist($sale);
+            $this->em->flush();
             return $this->redirectToRoute('app_buy_or_sell_player');
         }
 

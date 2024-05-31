@@ -18,18 +18,27 @@ class PlayerFormType extends AbstractType
     {
         $builder
             ->add('firstName', TextType::class, [
+                'label' => 'Prénoms',
                 'constraints' => [
                     new NotBlank,
                     new Length(min: 2)
+                ],
+                'attr' => [
+                    'placeholder' => 'Ex: Tony'
                 ]
             ])
             ->add('lastName', TextType::class, [
+                'label' => 'Nom de famille',
                 'constraints' => [
                     new NotBlank,
                     new Length(min: 2)
+                ],
+                'attr' => [
+                    'placeholder' => 'Ex: Kroos'
                 ]
             ])
             ->add('team', EntityType::class, [
+                'label' => 'Equipe',
                 'class' => Team::class,
                 'choice_label' => 'name',
             ])
