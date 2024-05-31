@@ -31,9 +31,23 @@ class Team
     #[ORM\OneToMany(targetEntity: Player::class, mappedBy: 'team')]
     private Collection $players;
 
+    /**
+     * @var Collection<int, Sale>
+     */
+    #[ORM\OneToMany(targetEntity: Sale::class, mappedBy: 'seller', orphanRemoval: true)]
+    private Collection $sales;
+
+    /**
+     * @var Collection<int, Sale>
+     */
+    #[ORM\OneToMany(targetEntity: Sale::class, mappedBy: 'buyer', orphanRemoval: true)]
+    private Collection $buys;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
+        $this->sales = new ArrayCollection();
+        $this->buys = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,6 +115,66 @@ class Team
             // set the owning side to null (unless already changed)
             if ($player->getTeam() === $this) {
                 $player->setTeam(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sale>
+     */
+    public function getSales(): Collection
+    {
+        return $this->sales;
+    }
+
+    public function addSale(Sale $sale): static
+    {
+        if (!$this->sales->contains($sale)) {
+            $this->sales->add($sale);
+            $sale->setSeller($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSale(Sale $sale): static
+    {
+        if ($this->sales->removeElement($sale)) {
+            // set the owning side to null (unless already changed)
+            if ($sale->getSeller() === $this) {
+                $sale->setSeller(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sale>
+     */
+    public function getBuys(): Collection
+    {
+        return $this->buys;
+    }
+
+    public function addBuy(Sale $buy): static
+    {
+        if (!$this->buys->contains($buy)) {
+            $this->buys->add($buy);
+            $buy->setBuyer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBuy(Sale $buy): static
+    {
+        if ($this->buys->removeElement($buy)) {
+            // set the owning side to null (unless already changed)
+            if ($buy->getBuyer() === $this) {
+                $buy->setBuyer(null);
             }
         }
 

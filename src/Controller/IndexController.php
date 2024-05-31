@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Entity\Sale;
 use App\Entity\Team;
 use App\Form\PlayerFormType;
+use App\Form\SalesFormType;
 use App\Form\TeamFormType;
-use App\Repository\PlayerRepository;
-use App\Repository\TeamRepository;
+use App\Repository\SaleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,14 +18,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class IndexController extends AbstractController
 {
-    private TeamRepository $teamRepository;
-    private PlayerRepository $playerRepository;
-    public function __construct(TeamRepository $teamRepository, PlayerRepository $playerRepository)
-    {
-        $this->teamRepository = $teamRepository;
-        $this->playerRepository = $playerRepository;
-    }
-
     #[Route('/', name: 'app_index')]
     public function index(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
     {
@@ -34,8 +27,13 @@ class IndexController extends AbstractController
 
         $paginate_teams = $paginator->paginate(
             $query,
-            $request->query->getInt('page', 1),
-            5
+            $request->query->getInt('t_page', 1),
+            5,
+            [
+                'pageParameterName' => 't_page',
+                'sortFieldParameterName' => 't_sort',
+                'sortDirectionParameterName' => 't_direction'
+            ]
         );
 
         //player pagination
@@ -44,8 +42,13 @@ class IndexController extends AbstractController
 
         $paginate_players = $paginator->paginate(
             $query,
-            $request->query->getInt('page', 1),
-            5
+            $request->query->getInt('p_page', 1),
+            5,
+            [
+                'pageParameterName' => 'p_page',
+                'sortFieldParameterName' => 'p_sort',
+                'sortDirectionParameterName' => 'p_direction'
+            ]
         );
 
         return $this->render('index.html.twig', [
@@ -86,8 +89,31 @@ class IndexController extends AbstractController
     }
 
     #[Route('/buy-sell-player', name: 'app_buy_or_sell_player')]
-    public function buy_or_sell_player(): Response
+    public function buy_or_sell_player(Request $request, SaleRepository $saleRepository, EntityManagerInterface $em): Response
     {
-        return $this->render('buy_or_sell_player.html.twig', []);
+        $sale = new Sale();
+        $sales_form = $this->createForm(SalesFormType::class, $sale);
+
+        $sales_form->handleRequest($request);
+
+        if ($sales_form->isSubmitted() && $sales_form->isValid()) {
+
+            // on transfert le joueur ves l'équipe acheteur
+            $sale->getPlayer()->setTeam($sale->getBuyer());
+            // on ajoute le montant de transfert au solde de l'équipe vendeur
+            $sale->getSeller()->setBalance($sale->getSeller()->getBalance() + $sale->getAmount());
+            // on déduit le montant de transfert au solde de l'équipe acheteur
+            $sale->getBuyer()->setBalance($sale->getBuyer()->getBalance() - $sale->getAmount());
+
+            $em->persist($sale);
+            $em->flush();
+            return $this->redirectToRoute('app_buy_or_sell_player');
+        }
+
+        $all_mercato = $saleRepository->findAll();
+        return $this->render('buy_or_sell_player.html.twig', [
+            'sales_form' => $sales_form,
+            'all_mercato' => $all_mercato
+        ]);
     }
 }

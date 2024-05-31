@@ -59,8 +59,8 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th {% if all_players.isSorted('p.first_name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Prénoms', 'p.first_name') }}</th>
-                    <th {% if all_players.isSorted('p.last_name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Nom de famille', 'p.last_name') }}</th>
+                    <th {% if all_players.isSorted('p.firstName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Prénoms', 'p.firstName') }}</th>
+                    <th {% if all_players.isSorted('p.lastName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(all_players, 'Nom de famille', 'p.lastName') }}</th>
                     <th>Equipe</th>
                 </tr>
                 </thead>

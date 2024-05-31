@@ -3,5 +3,52 @@
 {% block title %}Vente/Achat de joueur{% endblock %}
 
 {% block body %}
-    <h1>Vente et achat de joueurs</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Vente et achat de joueurs</h1>
+            <div class="row">
+                <div class="col-md-4">
+                    <h3>Effectuer un transfert</h3>
+                    {{ form_start(sales_form, {
+                        'attr': {
+                            'novalidate': 'novalidate',
+                            'method': 'post'
+                        }
+                    }) }}
+                    {{ form_widget(sales_form) }}
+                    <button class="btn btn-success" type="submit">Valider le transfert</button>
+                    {{ form_end(sales_form) }}
+                </div>
+                <div class="col-md-8">
+                    <h3>Historique de transfert</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Joueur</th>
+                                <th>Vendeur</th>
+                                <th>Acheteur</th>
+                                <th>Montant du transfert</th>
+                                <th>Date du transfert</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for mercato in all_mercato %}
+                            <tr>
+                                <td>{{ mercato.player.fullName }}</td>
+                                <td>{{ mercato.seller.name }}</td>
+                                <td>{{ mercato.buyer.name }}</td>
+                                <td>{{ mercato.amount }}</td>
+                                <td>{{ mercato.createdAt ? mercato.createdAt|date('Y-m-d H:m:s') : '' }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5">Il n'y aucun transfert</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
