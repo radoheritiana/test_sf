@@ -11,7 +11,9 @@
                     {{ all_teams.getTotalItemCount }} équipe{% if all_teams.getTotalItemCount != 1 %}s{% endif%} au total
                 </div>
                 <div>
-                    <input name="search" id="search" type="search" class="form-control" placeholder="Rechercher...">
+                    {{ form_start(search_team_form) }}
+                    {{ form_widget(search_team_form) }}
+                    {{ form_end(search_team_form) }}
                 </div>
             </div>
             <table class="table table-striped">

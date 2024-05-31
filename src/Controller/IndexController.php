@@ -7,6 +7,7 @@ use App\Entity\Sale;
 use App\Entity\Team;
 use App\Form\PlayerFormType;
 use App\Form\SalesFormType;
+use App\Form\SearchTeamFormType;
 use App\Form\TeamFormType;
 use App\Repository\SaleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,12 +22,27 @@ class IndexController extends AbstractController
     #[Route('/', name: 'app_index')]
     public function index(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
     {
+        //team search form handling
+        $search_team_form = $this->createForm(SearchTeamFormType::class);
+        $search_team_form->handleRequest($request);
+
+        $search_team_value = $search_team_form->get('name_query')->getData();
+
         //team pagination
-        $dql   = "SELECT t FROM App\Entity\Team t";
-        $query = $em->createQuery($dql);
+        $teamdql   = "SELECT t FROM App\Entity\Team t";
+
+        //if search
+        if ($search_team_value) {
+            $teamdql .= " WHERE t.name LIKE :searchQuery OR t.country LIKE :searchQuery";
+        }
+
+        $team_query = $em->createQuery($teamdql);
+        if($search_team_value) {
+            $team_query->setParameter("searchQuery", "%" . $search_team_value . "%");
+        }
 
         $paginate_teams = $paginator->paginate(
-            $query,
+            $team_query,
             $request->query->getInt('t_page', 1),
             5,
             [
@@ -53,7 +69,8 @@ class IndexController extends AbstractController
 
         return $this->render('index.html.twig', [
             'all_teams' => $paginate_teams,
-            'all_players' => $paginate_players
+            'all_players' => $paginate_players,
+            'search_team_form' => $search_team_form->createView()
         ]);
     }
 
