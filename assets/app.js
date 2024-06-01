@@ -11,7 +11,7 @@ import './styles/app.css';
 import 'bootstrap';
 import $ from 'jquery';
 
-$(document).ready(function () {
+/*$(document).ready(function () {
     $("#form_player").hide();
     $("#form_buyer").hide();
     $("#form_amount").hide();
@@ -26,4 +26,4 @@ $(document).ready(function () {
             $('#form_player').hide();
         }
     });
-});
+});*/

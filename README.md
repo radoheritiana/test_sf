@@ -63,3 +63,11 @@ npm run dev
 * Show list of all team and player
 * Add new team or player
 * Sell or buy player between two team
+
+## TODO
+- [ ] Error and success message form
+- [ ] Sell player form handling database constraints
+- [ ] Unit Test
+- [ ] Rewrite readme
+- [ ] Code review
+- [ ] Query optimization for best performance
