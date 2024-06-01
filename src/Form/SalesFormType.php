@@ -18,19 +18,21 @@ class SalesFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('seller', EntityType::class, [
+                'placeholder' => 'Selectionner équipe vendeur',
+                'class' => Team::class,
+                'choice_label' => 'name',
+                'label' => 'Equipe vendeur',
+                'constraints' => [
+                    new NotBlank,
+                    new NotNull
+                ],
+            ])
             ->add('player', EntityType::class, [
                 'class' => Player::class,
                 'choice_label' => 'fullName',
                 'label' => 'Joueur à transferer',
-                'constraints' => [
-                    new NotBlank,
-                    new NotNull
-                ]
-            ])
-            ->add('seller', EntityType::class, [
-                'class' => Team::class,
-                'choice_label' => 'name',
-                'label' => 'Equipe vendeur',
+                'choices' => [],
                 'constraints' => [
                     new NotBlank,
                     new NotNull
@@ -40,6 +42,7 @@ class SalesFormType extends AbstractType
                 'class' => Team::class,
                 'choice_label' => 'name',
                 'label' => 'Equipe acheteur',
+                'choices' => [],
                 'constraints' => [
                     new NotBlank,
                     new NotNull

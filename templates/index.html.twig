@@ -104,11 +104,12 @@
                         <tr>
                             <td>{{ player.firstName }}</td>
                             <td>{{ player.lastName }}</td>
-                            <td>{{ player.team.name }}</td>
+                            <td>{{ player.team ? player.team.name : 'Pas d\'équipe' }}</td>
                             <td>
-                                <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#playermodal{{ player.id }}">Equipe</button>
+                                <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#playermodal{{ player.id }}" {{ player.team ? '' : 'disabled="disabled"' }}">Equipe</button>
                             </td>
                         </tr>
+                        {% if player.team %}
                         <div class="modal fade" id="playermodal{{ player.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -138,6 +139,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% endif %}
                     {% else %}
                         <tr>
                             <td colspan="3">Il n'y a pas encore de joueurs, veuillez ajouter!</td>

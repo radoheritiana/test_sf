@@ -41,6 +41,7 @@ class PlayerFormType extends AbstractType
                 'label' => 'Equipe',
                 'class' => Team::class,
                 'choice_label' => 'name',
+                'placeholder' => 'Selectionner équipe'
             ])
         ;
     }

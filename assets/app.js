@@ -9,3 +9,21 @@
 import './styles/app.css';
 
 import 'bootstrap';
+import $ from 'jquery';
+
+$(document).ready(function () {
+    $("#form_player").hide();
+    $("#form_buyer").hide();
+    $("#form_amount").hide();
+    $("#submit_form").attr('disabled', true);
+
+    $('#sales_form_seller').on('change', function () {
+        var teamId = $(this).val();
+
+        if(teamId !== "") {
+            $('#form_player').show();
+        } else {
+            $('#form_player').hide();
+        }
+    });
+});
